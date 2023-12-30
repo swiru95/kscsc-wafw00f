@@ -10,10 +10,10 @@ def trigger_waf_woof(req: func.HttpRequest) -> func.HttpResponse:
     #Check if POST
     if req.method!="POST":
         print(f"{req.method} is not valid.")
-        #return func.HttpResponse(f"Not Found", status_code=404)
+        return func.HttpResponse(f"Not Found", status_code=404)
 
     #Check target param
-    url=req.params.get("target")
+    url=json.loads(req.get_body().decode())['target']
     if(not url or not url.startswith('http')):
          return func.HttpResponse(f"Bad Request",status_code=400)
     
