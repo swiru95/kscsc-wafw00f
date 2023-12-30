@@ -2,7 +2,7 @@ import azure.functions as func
 import logging, json
 from wafw00f.main import WAFW00F
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 @app.route(route="trigger_waf_woof")
 def trigger_waf_woof(req: func.HttpRequest) -> func.HttpResponse:
