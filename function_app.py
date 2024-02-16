@@ -1,6 +1,7 @@
 import azure.functions as func
 import json
 from wafw00f.main import WAFW00F
+from jinja2 import utils
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
@@ -14,6 +15,7 @@ def trigger_waf_woof(req: func.HttpRequest) -> func.HttpResponse:
     try:
         #Check target param
         url=json.loads(req.get_body().decode())['target']
+        url=utils.escape(url)
         if(not url or not url.startswith('http')):
             return func.HttpResponse(f"Bad Request",status_code=400)
     
