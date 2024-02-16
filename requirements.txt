@@ -4,4 +4,4 @@
 
 azure-functions
 wafw00f
-Jinja2
+bleach
