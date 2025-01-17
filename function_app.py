@@ -16,8 +16,12 @@ def trigger_waf_woof(req: func.HttpRequest) -> func.HttpResponse:
         #Check target param
         url=json.loads(req.get_body().decode())['target']
         url=clean(url)
-        if(not url or not url.startswith('http')):
-            return func.HttpResponse(f"Bad Request",status_code=400)
+        if(not url or not url.startswith(('http://', 'https://'))):
+            return func.HttpResponse(f"Bad Request - Invalid URL format",status_code=400)
+        
+        # Dodać limit długości URL
+        if len(url) > 2048:  # standardowy limit długości URL
+            return func.HttpResponse(f"Bad Request - URL too long",status_code=400)
     
         #create target JSON
         target={'target':url,'status':'protected','solution':'none'}
