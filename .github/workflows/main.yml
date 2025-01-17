@@ -18,6 +18,9 @@
 
 name: Deploy Python project to Azure Function App
 
+permissions:
+  id-token: write
+
 on:
   push:
     branches: ["main"]
