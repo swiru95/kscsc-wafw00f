@@ -2,16 +2,34 @@ import azure.functions as func
 import json
 from wafw00f.main import WAFW00F
 from bleach import clean
+import os
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
-@app.route(route="trigger_waf_woof")
-def trigger_waf_woof(req: func.HttpRequest) -> func.HttpResponse:
+@app.route(
+    route="trigger_waf_woof",
+    methods=["GET"],
+    auth_level=func.AuthLevel.FUNCTION
+)
+def get_api_spec(req: func.HttpRequest) -> func.HttpResponse:
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    spec_path = os.path.join(current_dir, 'api_spec.json')
     
-    #Check if POST
-    if req.method!="POST":
-        print(f"{req.method} is not valid.")
-        return func.HttpResponse(f"Not Found", status_code=404)
+    with open(spec_path, 'r') as f:
+        api_spec = json.load(f)
+        
+    return func.HttpResponse(
+        json.dumps(api_spec, indent=2),
+        mimetype="application/json",
+        status_code=200
+    )
+
+@app.route(
+    route="trigger_waf_woof",
+    methods=["POST"],
+    auth_level=func.AuthLevel.FUNCTION
+)
+def trigger_waf_woof(req: func.HttpRequest) -> func.HttpResponse:
     try:
         #Check target param
         url=json.loads(req.get_body().decode())['target']

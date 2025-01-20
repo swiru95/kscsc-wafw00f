@@ -1,0 +1,69 @@
+{
+    "requestBody": {
+        "description": "URL to scan for WAF",
+        "required": true,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "target": {
+                            "type": "string",
+                            "format": "uri",
+                            "description": "Target URL to scan (must start with http:// or https://)",
+                            "example": "https://www.example.com"
+                        }
+                    },
+                    "required": ["target"]
+                }
+            }
+        }
+    },
+    "responses": {
+        "200": {
+            "description": "Successful WAF detection",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "target": {
+                                "type": "string",
+                                "description": "Scanned URL"
+                            },
+                            "status": {
+                                "type": "string",
+                                "enum": ["protected", "down", "unknown"],
+                                "description": "Status of WAF detection"
+                            },
+                            "solution": {
+                                "type": "string",
+                                "description": "Detected WAF solution or 'none' if not detected"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "400": {
+            "description": "Bad Request - Invalid URL or request format",
+            "content": {
+                "text/plain": {
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "404": {
+            "description": "Not Found - Method not allowed",
+            "content": {
+                "text/plain": {
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+} 
