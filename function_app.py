@@ -3,6 +3,7 @@ import json
 from wafw00f.main import WAFW00F
 from bleach import clean
 import os
+import yaml
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
@@ -13,14 +14,14 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 )
 def get_api_spec(req: func.HttpRequest) -> func.HttpResponse:
     current_dir = os.path.dirname(os.path.realpath(__file__))
-    spec_path = os.path.join(current_dir, 'api_spec.json')
+    spec_path = os.path.join(current_dir, 'api_spec.yaml')
     
     with open(spec_path, 'r') as f:
-        api_spec = json.load(f)
+        content = f.read()
         
     return func.HttpResponse(
-        json.dumps(api_spec, indent=2),
-        mimetype="application/json",
+        content,
+        mimetype="application/yaml",
         status_code=200
     )
 
