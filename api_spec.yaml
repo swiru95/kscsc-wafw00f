@@ -9,7 +9,7 @@ servers:
     description: Production server
 
 paths:
-  /api/trigger_waf_woof:
+  /:
     post:
       summary: Detect WAF for a given URL
       requestBody:

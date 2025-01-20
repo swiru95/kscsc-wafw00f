@@ -1,6 +1,7 @@
 name: Deploy Python project to Azure Function App
 
 permissions:
+  checks: write
   id-token: write
 
 on:
