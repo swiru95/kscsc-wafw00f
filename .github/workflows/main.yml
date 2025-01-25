@@ -25,7 +25,6 @@ jobs:
 
       - name: 'Prepare Function Code'
         run: |
-          ls && pwd
           cd function
           zip -r functionapp.zip ./*
 
