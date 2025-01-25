@@ -78,12 +78,4 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
     }
     httpsOnly: true
   }
-}
-
-resource zipDeploy 'Microsoft.Web/sites/zipdeploy@2022-03-01' = {
-  parent: functionApp
-  name: 'zipdeploy'
-  properties: {
-    packageContent: loadFileAsBase64('../function/functionapp.zip')
-  }
 } 
