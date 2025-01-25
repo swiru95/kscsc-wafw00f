@@ -4,16 +4,18 @@ param location string = resourceGroup().location
 @description('The language worker runtime to load in the function app.')
 param linuxFxVersion string = 'PYTHON|3.11'
 
+@description('Subscription ID containing the existing storage account')
+param storageAccountSubscriptionId string
+
 var functionAppName = 'wafw00fkscsc'
 var hostingPlanName = functionAppName
 var functionWorkerRuntime = 'python'
 var existingStorageAccountName = 'kscscwebrootstorage'
 var existingStorageAccountResourceGroup = 'Websites'
-var existingStorageAccountSubscriptionId = '4f1f709d-ea44-4ec8-83d2-d5cd25381717'
 
 resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: existingStorageAccountName
-  scope: resourceGroup(existingStorageAccountSubscriptionId, existingStorageAccountResourceGroup)
+  scope: resourceGroup(storageAccountSubscriptionId, existingStorageAccountResourceGroup)
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2022-03-01' = {

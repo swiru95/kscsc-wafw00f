@@ -42,6 +42,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP }}
           template: ./bicep/function.bicep
+          parameters: storageAccountSubscriptionId=${{ secrets.AZURE_SUBSCRIPTION_ID }}
           failOnStdErr: false
 
       # DAST
