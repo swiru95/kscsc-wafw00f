@@ -11,8 +11,9 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'wafw00fkscsc'      # Function app name on Azure
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'         # Path to function app project
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './function' # Path to function app project
   PYTHON_VERSION: '3.11'                      # Python version to use
+  RESOURCE_GROUP: 'WafW00f'                   # Resource group name
 
 jobs:
   build-and-deploy:
@@ -22,6 +23,11 @@ jobs:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
 
+      - name: 'Prepare Function Code'
+        run: |
+          cd function
+          zip -r functionapp.zip ./*
+
       - name: 'Login via Azure CLI'
         uses: azure/login@v2
         with:
@@ -29,27 +35,14 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: 'Setup Python ${{ env.PYTHON_VERSION }} Environment'
-        uses: actions/setup-python@v5
+      - name: 'Deploy Azure Infrastructure and Function'
+        uses: azure/arm-deploy@v2
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: 'Resolve Project Dependencies Using Pip'
-        shell: bash
-        run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
-          popd
-
-      - name: 'Run Azure Functions Action'
-        uses: Azure/functions-action@v1.5.2
-        id: fa
-        with:
-          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          scm-do-build-during-deployment: true
-          enable-oryx-build: true
+          scope: resourcegroup
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ env.RESOURCE_GROUP }}
+          template: ./bicep/function.bicep
+          failOnStdErr: false
 
       # DAST
       - name: 'Dastardly Scan Action'
@@ -59,7 +52,7 @@ jobs:
 
       - name: 'Publish Test Report'
         if: always()
-        uses: mikepenz/action-junit-report@v3
+        uses: mikepenz/action-junit-report@v4
         with:
           report_paths: '**/dastardly-report.xml'
           require_tests: true
