@@ -44,7 +44,7 @@ jobs:
           cd function
           pip3 install -r requirements.txt -t .python_packages/lib/site-packages/
           zip -r functionapp.zip ./*
-          az functionapp deployment source config-zip -g ${{ env.RESOURCE_GROUP }} -n ${{ env.AZURE_FUNCTIONAPP_NAME }} --src functionapp.zip
+          az storage blob upload --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} --container-name functionapp --name functionapp.zip --file ./function.zip --auth-mode login
 
       # DAST
       - name: 'Dastardly Scan Action'
