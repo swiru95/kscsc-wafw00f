@@ -37,6 +37,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP }}
           template: ./bicep/function.bicep
+          parameters: storageAccountName=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
           failOnStdErr: false
 
       - name: 'Deploy Function Code'
