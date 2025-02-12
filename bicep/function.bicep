@@ -4,18 +4,23 @@ param location string = resourceGroup().location
 @description('The language worker runtime to load in the function app.')
 param linuxFxVersion string = 'PYTHON|3.11'
 
-@description('Subscription ID containing the existing storage account')
-param storageAccountSubscriptionId string
-
 var functionAppName = 'wafw00fkscsc'
 var hostingPlanName = functionAppName
 var functionWorkerRuntime = 'python'
-var existingStorageAccountName = 'kscscwebrootstorage'
-var existingStorageAccountResourceGroup = 'Websites'
+var storageAccountName = 'kscscwafw00fstorage'
+var storageAccountType = 'Standard_LRS'
 
-resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  name: existingStorageAccountName
-  scope: resourceGroup(storageAccountSubscriptionId, existingStorageAccountResourceGroup)
+resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: storageAccountType
+  }
+  kind: 'Storage'
+  properties: {
+    supportsHttpsTrafficOnly: true
+    defaultToOAuthAuthentication: true
+  }
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2022-03-01' = {
@@ -44,11 +49,11 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${existingStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${existingStorageAccount.listKeys().keys[0].value}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${existingStorageAccount.listKeys().keys[0].value}'
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${existingStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${existingStorageAccount.listKeys().keys[0].value}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${existingStorageAccount.listKeys().keys[0].value}'
         }
         {
           name: 'WEBSITE_CONTENTSHARE'
