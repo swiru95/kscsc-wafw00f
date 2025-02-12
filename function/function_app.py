@@ -1,9 +1,7 @@
 import azure.functions as func
-import json
+import json, os
 from wafw00f.main import WAFW00F
 from bleach import clean
-import os
-import yaml
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 

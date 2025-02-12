@@ -10,7 +10,7 @@ var functionWorkerRuntime = 'python'
 var storageAccountName = 'kscscwafw00fstorage'
 var storageAccountType = 'Standard_LRS'
 
-resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -39,6 +39,9 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   name: functionAppName
   location: location
   kind: 'functionapp,linux'
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     serverFarmId: hostingPlan.id
     siteConfig: {
@@ -48,36 +51,12 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
       ftpsState: 'FtpsOnly'
       appSettings: [
         {
-          name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${existingStorageAccount.listKeys().keys[0].value}'
-        }
-        {
-          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${existingStorageAccount.listKeys().keys[0].value}'
-        }
-        {
-          name: 'WEBSITE_CONTENTSHARE'
-          value: toLower(functionAppName)
-        }
-        {
           name: 'FUNCTIONS_EXTENSION_VERSION'
           value: '~4'
         }
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: functionWorkerRuntime
-        }
-        {
-          name: 'WEBSITE_NODE_DEFAULT_VERSION'
-          value: '~18'
-        }
-        {
-          name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
-          value: 'true'
-        }
-        {
-          name: 'ENABLE_ORYX_BUILD'
-          value: 'true'
         }
       ]
     }
