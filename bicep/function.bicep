@@ -67,7 +67,7 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
         }
         {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: 'https://${storageAccountName}.blob.core.windows.net/functionapp/functionapp.zip'
+          value: '${storageAccount.properties.primaryEndpoints.blob}/functionapp/functionapp.zip'
         }
       ]
     }
