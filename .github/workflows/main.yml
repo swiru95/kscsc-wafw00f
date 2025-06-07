@@ -48,7 +48,8 @@ jobs:
           parameters: >
             {
               "functionName":"${{ secrets.AZURE_FUNCTIONAPP_NAME }}",
-              "logAnalyticsWorkspaceId":"${{ secrets.AZURE_LOG_ANALYTICS_WORKSPACE_ID }}"
+              "logAnalyticsWorkspaceId":"${{ secrets.AZURE_LOG_ANALYTICS_WORKSPACE_ID }}",
+              "location":"westeurope"
             }
 
       - name: Deploy Bicep Template
