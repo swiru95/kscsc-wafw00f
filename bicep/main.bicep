@@ -183,6 +183,7 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
     httpsOnly: true
     siteConfig: {
       minTlsVersion: '1.2'
+      alwaysOn: false
     }
     functionAppConfig: {
       deployment: {
