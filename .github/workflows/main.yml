@@ -74,13 +74,13 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }} 
 
       - name: 'Run the Azure Functions action'
-          uses: Azure/functions-action@v1
-          id: DeployFunctionApp
-          with:
-            app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
-            package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH}}'
-            remote-build: true
-            sku: 'flexconsumption'
+        uses: Azure/functions-action@v1
+        id: DeployFunctionApp
+        with:
+          app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH}}'
+          remote-build: true
+          sku: 'flexconsumption'
 
       # DAST
       - name: 'Dastardly Scan Action'
