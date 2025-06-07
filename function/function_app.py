@@ -6,6 +6,17 @@ from bleach import clean
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 @app.route(
+    route="test",
+    methods=["GET"],
+    auth_level=func.AuthLevel.FUNCTION
+)
+def get_api_spec(req: func.HttpRequest) -> func.HttpResponse:
+    return func.HttpResponse(
+        "OK",
+        status_code=200
+    )
+
+@app.route(
     route="trigger_waf_woof",
     methods=["GET"],
     auth_level=func.AuthLevel.FUNCTION
