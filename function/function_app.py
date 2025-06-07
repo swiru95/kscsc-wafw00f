@@ -10,7 +10,7 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
     methods=["GET"],
     auth_level=func.AuthLevel.FUNCTION
 )
-def get_api_spec(req: func.HttpRequest) -> func.HttpResponse:
+def test(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse(
         "OK",
         status_code=200
