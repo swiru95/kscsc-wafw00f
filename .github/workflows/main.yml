@@ -87,7 +87,7 @@ jobs:
       - name: 'Dastardly Scan Action'
         uses: PortSwigger/dastardly-github-action@main
         with:
-          target-url: 'https://${{secrets.AZURE_FUNCTIONAPP_NAME}}.kscsc.online/'
+          target-url: 'https://${{secrets.AZURE_FUNCTIONAPP_NAME}}.kscsc.online/api/trigger_waf_woof'
 
       - name: 'Publish Test Report'
         if: always()
