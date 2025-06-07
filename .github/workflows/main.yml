@@ -29,11 +29,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Check Python Version
+      - name: Check files
         run: |
           pwd
           ls -la
-          
+
       - name: Validate
         uses: azure/bicep-deploy@v2
         with:
@@ -43,7 +43,7 @@ jobs:
           scope: resourceGroup
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group-name: ${{ env.RESOURCE_GROUP }}
-          template: 'bicep/main.bicep'
+          template: bicep/main.bicep
 
      
 
