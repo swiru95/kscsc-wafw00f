@@ -35,7 +35,7 @@ jobs:
           ls -la
           ls -la bicep
 
-      - name: Validate
+      - name: Validate Bicep Template
         uses: azure/bicep-deploy@v2
         with:
           type: deployment
@@ -46,7 +46,21 @@ jobs:
           resource-group-name: ${{ env.RESOURCE_GROUP }}
           template-file: bicep/main.bicep
 
-     
+      - name: Deploy Bicep Template
+        uses: azure/bicep-deploy@v2
+        with:
+          type: deployment
+          operation: craete
+          name: Validate Bicep Template
+          scope: resourceGroup
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resource-group-name: ${{ env.RESOURCE_GROUP }}
+          template-file: bicep/main.bicep\
+          parameters: >
+            {
+              "functionAppName":"${{ secrets.AZURE_FUNCTIONAPP_NAME }}",
+              "logAnalyticsWorkspaceId":"${{ secrets.AZURE_LOG_ANALYTICS_WORKSPACE_ID }}"
+            }
 
       # DAST
       - name: 'Dastardly Scan Action'
