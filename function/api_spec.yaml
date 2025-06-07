@@ -1,19 +1,15 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
-  title: WAFW00F Detection API
-  description: API for detecting Web Application Firewalls using WAFW00F
+  title: WAFW00F API
   version: 1.0.0
-
+  description: API for detecting WAF solutions using wafw00f.
 servers:
-  - url: https://wafw00f.kscsc.online
-    description: Production server
-
+  - url: https://wafw00f.kscsc.online/api
 paths:
-  /:
+  /trigger_waf_woof:
     post:
-      summary: Detect WAF for a given URL
+      summary: Detect WAF solution for a target URL
       requestBody:
-        description: URL to scan for WAF
         required: true
         content:
           application/json:
@@ -22,14 +18,12 @@ paths:
               properties:
                 target:
                   type: string
-                  format: uri
                   description: Target URL to scan (must start with http:// or https://)
-                  example: https://www.example.com
               required:
                 - target
       responses:
         '200':
-          description: Successful WAF detection
+          description: WAF detection result
           content:
             application/json:
               schema:
@@ -37,36 +31,29 @@ paths:
                 properties:
                   target:
                     type: string
-                    description: Scanned URL
+                    example: https://contact.kscsc.online
                   status:
                     type: string
-                    enum:
-                      - protected
-                      - down
-                      - unknown
-                    description: Status of WAF detection
+                    example: protected
                   solution:
-                    type: string
-                    description: Detected WAF solution or 'none' if not detected
+                    oneOf:
+                      - type: string
+                      - type: array
+                        items:
+                          type: string
+                    example: ["Cloudflare (Cloudflare Inc.)"]
         '400':
-          description: Bad Request - Invalid URL or request format
+          description: Bad request (invalid input)
           content:
             text/plain:
               schema:
                 type: string
-        '404':
-          description: Not Found - Method not allowed
-          content:
-            text/plain:
-              schema:
-                type: string
-    
     get:
-      summary: Get API specification
+      summary: Get OpenAPI specification in YAML format
       responses:
         '200':
-          description: OpenAPI specification in YAML format
+          description: OpenAPI YAML specification
           content:
             application/yaml:
               schema:
-                type: object 
+                type: string
