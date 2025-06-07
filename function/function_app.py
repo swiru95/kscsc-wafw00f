@@ -30,34 +30,29 @@ def get_api_spec(req: func.HttpRequest) -> func.HttpResponse:
 )
 def trigger_waf_woof(req: func.HttpRequest) -> func.HttpResponse:
     try:
-        #Check target param
-        url=json.loads(req.get_body().decode())['target']
-        url=clean(url)
-        if(not url or not url.startswith(('http://', 'https://'))):
-            return func.HttpResponse(f"Bad Request - Invalid URL format",status_code=400)
-        
-        # Dodać limit długości URL
-        if len(url) > 2048:  # standardowy limit długości URL
-            return func.HttpResponse(f"Bad Request - URL too long",status_code=400)
-    
-        #create target JSON
-        target={'target':url,'status':'protected','solution':'none'}
-    
-        attacker = WAFW00F(target['target'],debuglevel=40)
-    
-        #Target ONLINE?
+        data = json.loads(req.get_body().decode())
+        url = data.get('target', '').strip()
+        url = clean(url)
+        if not url or not url.startswith(('http://', 'https://')):
+            return func.HttpResponse("Bad Request - Invalid URL format", status_code=400)
+        if len(url) > 2048:
+            return func.HttpResponse("Bad Request - URL too long", status_code=400)
+
+        target = {'target': url, 'status': 'protected', 'solution': 'none'}
+        attacker = WAFW00F(target['target'], debuglevel=40)
+
         if attacker.rq is None:
-            target['status']='down'
-        
-        waf=attacker.identwaf(findall=True)
+            target['status'] = 'down'
+
+        waf = attacker.identwaf(findall=True)
         if len(waf) > 0:
-            target['solution']=waf[0]
-        elif (attacker.genericdetect()):
-            target['solution']='generic'        
+            target['solution'] = waf[0]
+        elif attacker.genericdetect():
+            target['solution'] = 'generic'
         else:
-            target['status']='unknown'
-         
-        return func.HttpResponse(json.dumps(target),status_code=200)
-    
-    except:
-        return func.HttpResponse(f"Bad Request",status_code=400)
+            target['status'] = 'unknown'
+
+        return func.HttpResponse(json.dumps(target), status_code=200, mimetype="application/json")
+
+    except (json.JSONDecodeError, KeyError, Exception) as e:
+        return func.HttpResponse("Bad Request", status_code=400)

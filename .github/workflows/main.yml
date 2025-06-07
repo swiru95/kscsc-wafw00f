@@ -10,9 +10,8 @@ on:
       - "main"
 
 env:
-  AZURE_FUNCTIONAPP_NAME: 'wafw00fkscsc'      # Function app name on Azure
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './function' # Path to function app project
-  PYTHON_VERSION: '3.11'                      # Python version to use
+  PYTHON_VERSION: '3.12'                      # Python version to use
   RESOURCE_GROUP: 'WafW00f'                   # Resource group name
 
 jobs:
@@ -30,22 +29,18 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: 'Deploy Azure Infrastructure'
-        uses: azure/arm-deploy@v2
+      - name: Validate
+        uses: azure/bicep-deploy@v2
         with:
-          scope: resourcegroup
-          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: ${{ env.RESOURCE_GROUP }}
-          template: ./bicep/function.bicep
-          parameters: storageAccountName=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-          failOnStdErr: false
+          type: deployment
+          operation: validate
+          name: Validate Bicep Template
+          scope: resourceGroup
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resource-group-name: ${{ env.RESOURCE_GROUP }}
+          template: './bicep/main.bicep'
 
-      - name: 'Deploy Function Code'
-        run: |
-          cd function
-          pip3 install -r requirements.txt -t .python_packages/lib/site-packages/
-          zip -r functionapp.zip ./*
-          az storage blob upload --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} --container-name functionapp --name functionapp.zip --file ./functionapp.zip --auth-mode login
+     
 
       # DAST
       - name: 'Dastardly Scan Action'
