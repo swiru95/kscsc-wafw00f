@@ -61,7 +61,7 @@ jobs:
           scope: resourceGroup
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group-name: ${{ env.RESOURCE_GROUP }}
-          template-file: bicep/main.bicep\
+          template-file: bicep/main.bicep
           parameters: >
             {
               "functionName":"${{ secrets.AZURE_FUNCTIONAPP_NAME }}",
