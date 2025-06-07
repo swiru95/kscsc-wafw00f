@@ -33,6 +33,7 @@ jobs:
         run: |
           pwd
           ls -la
+          ls -la bicep
 
       - name: Validate
         uses: azure/bicep-deploy@v2
