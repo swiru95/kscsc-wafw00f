@@ -190,7 +190,7 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
           type: 'blobContainer'
           value: '${storage.properties.primaryEndpoints.blob}${deploymentStorageContainerName}'
           authentication: {
-            type: 'SystemAssigned'
+            type: 'SystemAssignedIdentity'
           }
         }
       }
