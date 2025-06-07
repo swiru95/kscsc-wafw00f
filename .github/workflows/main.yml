@@ -40,18 +40,19 @@ jobs:
         with:
           type: deployment
           operation: validate
-          name: Validate Bicep Template
+          name: ValidateBicepTemplate
           scope: resourceGroup
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group-name: ${{ env.RESOURCE_GROUP }}
           template-file: bicep/main.bicep
 
       - name: Deploy Bicep Template
+        if: success()
         uses: azure/bicep-deploy@v2
         with:
           type: deployment
           operation: craete
-          name: Validate Bicep Template
+          name: DeployBicepTemplate
           scope: resourceGroup
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group-name: ${{ env.RESOURCE_GROUP }}
