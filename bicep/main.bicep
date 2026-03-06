@@ -50,9 +50,7 @@ var storageAccountAllowSharedKeyAccess = false
 
 // Define the IDs of the roles we need to assign to our managed identities.
 var storageBlobDataOwnerRoleId = 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
-var storageBlobDataContributorRoleId = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
 var storageQueueDataContributorId = '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
-var storageTableDataContributorId = '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3'
 var monitoringMetricsPublisherId = '3913510d-42f4-4e42-8a64-420c390055eb'
 
 //********************************************
@@ -111,34 +109,11 @@ resource roleAssignmentBlobDataOwner 'Microsoft.Authorization/roleAssignments@20
   }
 }
 
-resource roleAssignmentBlob 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().id, storage.id, functionApp.id, 'Storage Blob Data Contributor')
-  scope: storage
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      storageBlobDataContributorRoleId
-    )
-    principalId: functionApp.identity.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
 resource roleAssignmentQueueStorage 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(subscription().id, storage.id, functionApp.id, 'Storage Queue Data Contributor')
   scope: storage
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', storageQueueDataContributorId)
-    principalId: functionApp.identity.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource roleAssignmentTableStorage 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().id, storage.id, functionApp.id, 'Storage Table Data Contributor')
-  scope: storage
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', storageTableDataContributorId)
     principalId: functionApp.identity.principalId
     principalType: 'ServicePrincipal'
   }
