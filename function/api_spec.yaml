@@ -6,6 +6,27 @@ info:
 servers:
   - url: https://wafw00f.kscsc.online/api
 paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK
+  /openapi:
+    get:
+      summary: Get OpenAPI specification in YAML format
+      responses:
+        '200':
+          description: OpenAPI YAML specification
+          content:
+            application/yaml:
+              schema:
+                type: string
   /trigger_waf_woof:
     post:
       summary: Detect WAF solution for a target URL
@@ -48,12 +69,9 @@ paths:
             text/plain:
               schema:
                 type: string
-    get:
-      summary: Get OpenAPI specification in YAML format
-      responses:
-        '200':
-          description: OpenAPI YAML specification
+        '500':
+          description: Internal server error
           content:
-            application/yaml:
+            text/plain:
               schema:
                 type: string

@@ -2,6 +2,5 @@
 # The Python Worker is managed by Azure Functions platform
 # Manually managing azure-functions-worker may cause unexpected issues
 
-azure-functions
-wafw00f
-bleach
+azure-functions==1.24.0
+wafw00f==2.4.2
