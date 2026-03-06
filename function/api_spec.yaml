@@ -29,7 +29,7 @@ paths:
                 type: string
   /trigger_waf_woof:
     post:
-      summary: Detect WAF solution for a target URL
+      summary: Detect WAF, validate TLS and security headers for a target URL
       requestBody:
         required: true
         content:
@@ -44,7 +44,7 @@ paths:
                 - target
       responses:
         '200':
-          description: WAF detection result
+          description: WAF detection, TLS validation and security header analysis result
           content:
             application/json:
               schema:
@@ -63,6 +63,77 @@ paths:
                         items:
                           type: string
                     example: ["Cloudflare (Cloudflare Inc.)"]
+                  tls:
+                    type: object
+                    description: TLS configuration analysis with scoring
+                    properties:
+                      version:
+                        type: string
+                        example: TLSv1.3
+                      cipher:
+                        type: string
+                        example: TLS_AES_256_GCM_SHA384
+                      key_bits:
+                        type: integer
+                        example: 256
+                      score:
+                        type: integer
+                        description: Weighted score 0-100
+                        example: 95
+                      grade:
+                        type: string
+                        enum: [A, B, C, D, F]
+                        example: A
+                      issues:
+                        type: array
+                        items:
+                          type: string
+                  security_headers:
+                    type: object
+                    description: Security header validation per OWASP ASVS
+                    properties:
+                      score:
+                        type: integer
+                        description: Overall header score 0-100
+                        example: 75
+                      grade:
+                        type: string
+                        enum: [A, B, C, D, F]
+                        example: B
+                      headers:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            present:
+                              type: boolean
+                            value:
+                              type: string
+                              nullable: true
+                            description:
+                              type: string
+                            status:
+                              type: string
+                              enum: [pass, warn, missing, optional-missing]
+                            issues:
+                              type: array
+                              items:
+                                type: string
+                      issues:
+                        type: array
+                        items:
+                          type: string
+                      info_leakage:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            header:
+                              type: string
+                            value:
+                              type: string
+                            recommendation:
+                              type: string
         '400':
           description: Bad request (invalid input)
           content:
